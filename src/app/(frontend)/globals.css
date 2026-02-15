@@ -1,0 +1,79 @@
+@import "tailwindcss";
+@config "../../../tailwind.config.js";
+
+@layer base {
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #fcfaf5;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #d1d1d1;
+    border-radius: 2px;
+    border: 2px solid #fcfaf5;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #8b0000;
+  }
+
+  .drop-cap::first-letter {
+    font-family: 'Playfair Display', serif;
+    font-size: 5rem;
+    float: left;
+    line-height: 0.8;
+    margin-right: 0.12em;
+    margin-top: 0.12em;
+    font-weight: 900;
+    color: #1a1a1a;
+    text-transform: uppercase;
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.05);
+  }
+}
+
+@media print {
+  @page {
+    margin: 1.5cm;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+    visibility: hidden;
+  }
+
+  #root {
+    display: none !important;
+  }
+
+  .printing-container {
+    visibility: visible;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background: white !important;
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .printing-container * {
+    visibility: visible;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .prose {
+    max-width: 100% !important;
+    font-family: 'Lora', serif !important;
+    font-size: 11pt !important;
+    line-height: 1.5 !important;
+  }
+}
