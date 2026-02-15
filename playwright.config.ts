@@ -33,9 +33,11 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'], channel: 'chromium' },
     },
   ],
+  timeout: 120 * 1000,
   webServer: {
-    command: 'pnpm dev',
+    command: 'npm run dev',
     reuseExistingServer: true,
     url: 'http://localhost:3000',
+    timeout: 120 * 1000,
   },
 })

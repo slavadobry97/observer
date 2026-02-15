@@ -26,8 +26,17 @@ const ObserverApp: React.FC<ObserverAppProps> = ({ initialArticles, initialAds }
     const [isArchiveOpen, setIsArchiveOpen] = useState(false);
     const [dailyBriefing, setDailyBriefing] = useState<string>("Загрузка новостей университета...");
     const [weather, setWeather] = useState<WeatherData | undefined>();
-    const [articles] = useState<Article[]>(initialArticles);
-    const [ads] = useState<Ad[]>(initialAds);
+    const [articles, setArticles] = useState<Article[]>(initialArticles);
+    const [ads, setAds] = useState<Ad[]>(initialAds);
+
+    // Sync state with props for HMR and Live Preview
+    useEffect(() => {
+        setArticles(initialArticles);
+    }, [initialArticles]);
+
+    useEffect(() => {
+        setAds(initialAds);
+    }, [initialAds]);
 
     useEffect(() => {
         // Fetch daily briefing from our API route
@@ -36,11 +45,19 @@ const ObserverApp: React.FC<ObserverAppProps> = ({ initialArticles, initialAds }
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ action: 'briefing' }),
         })
-            .then(res => res.json())
-            .then(data => setDailyBriefing(data.text || "Сводка новостей временно недоступна."))
-            .catch(() => setDailyBriefing("Сводка новостей временно недоступна из-за очереди в кофейню."));
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                return res.json();
+            })
+            .then(data => setDailyBriefing(data.text || "Сводка новостей временно недоступна из-за очереди в кофейню."))
+            .catch((err) => {
+                console.error("Failed to fetch briefing:", err);
+                setDailyBriefing("Сводка новостей временно недоступна из-за очереди в кофейню.");
+            });
 
-        fetchMinskWeather().then(setWeather);
+        fetchMinskWeather()
+            .then(setWeather)
+            .catch(err => console.error("Failed to fetch weather:", err));
     }, []);
 
     useEffect(() => {

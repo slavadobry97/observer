@@ -14,8 +14,13 @@ export async function POST(request: NextRequest) {
     const ai = new GoogleGenAI({ apiKey });
 
     try {
-        const body = await request.json();
-        const { action, article } = body;
+    let body;
+    try {
+        body = await request.json();
+    } catch (e) {
+        return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
+    }
+    const { action, article } = body;
 
         if (action === 'briefing') {
             const result = await generateBriefing(ai);
@@ -90,11 +95,15 @@ async function generateBriefing(ai: GoogleGenAI): Promise<string> {
                 model: 'gemini-2.5-flash',
                 contents: prompt,
             });
-            return response.text || "В ОСО сегодня ажиотаж, а Ирина Олеговна Селезнева распорядилась завезти новые пуфики в коридоры.";
+            return response.text || "В ОСО сегодня ажиотаж, а Ирина Олеговна распорядилась завезти новые пуфики в коридоры.";
         });
-    } catch (error) {
+    } catch (error: any) {
+        if (error?.message?.includes('User location is not supported') || error?.status === 400) {
+            console.warn("Gemini API is not available in this region (Geo-blocked). Using fallback.");
+            return "В ОСО сегодня ажиотаж, а Ирина Олеговна распорядилась завезти новые пуфики в коридоры.";
+        }
         console.error("Gemini Briefing failed:", error);
-        return "В ОСО сегодня ажиотаж, а Ирина Олеговна Селезнева распорядилась завезти новые пуфики в коридоры.";
+        return "В ОСО сегодня ажиотаж, а Ирина Олеговна распорядилась завезти новые пуфики в коридоры.";
     }
 }
 

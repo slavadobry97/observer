@@ -12,11 +12,12 @@ interface HeroSectionProps {
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({ article, breakingArticles, onClick }) => {
+    const [particles, setParticles] = useState<{ id: number; left: string; top: string; size: number; duration: number; delay: number; opacity: number; driftX: number; driftY: number; blur: number }[]>([]);
     const [parallaxY, setParallaxY] = useState(0);
     const sectionRef = useRef<HTMLElement>(null);
 
-    const particles = useMemo(() => {
-        return [...Array(30)].map((_, i) => ({
+    useEffect(() => {
+        const generatedParticles = [...Array(30)].map((_, i) => ({
             id: i,
             left: `${Math.random() * 100}%`,
             top: `${Math.random() * 100}%`,
@@ -28,6 +29,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ article, breakingArtic
             driftY: Math.random() * 100 - 50,
             blur: Math.random() * 2,
         }));
+        setParticles(generatedParticles);
     }, []);
 
     useEffect(() => {
@@ -121,7 +123,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ article, breakingArtic
                             <div className="h-px bg-white/20 grow hidden md:block"></div>
                         </div>
 
-                        <h2 className="font-serif text-5xl md:text-7xl lg:text-8xl font-black leading-[1.05] mb-10 group-hover:text-uni-gold transition-colors duration-700 drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] tracking-tighter">
+                        <h2 className="font-serif text-5xl md:text-6xl lg:text-6xl font-black leading-[1.05] mb-10 group-hover:text-uni-gold transition-colors duration-700 drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] tracking-wide">
                             {article.title}
                         </h2>
 

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Menu, Search, User, X, Archive as ArchiveIcon, CloudSun } from 'lucide-react';
 import { ArticleCategory, WeatherData } from '../lib/types';
 
@@ -21,14 +21,18 @@ export const Masthead: React.FC<MastheadProps> = ({
     activeCategory,
     onCategorySelect
 }) => {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const currentDate = new Date().toLocaleDateString('ru-RU', {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-    });
-    const formattedDate = currentDate.toUpperCase();
+    const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+    const [formattedDate, setFormattedDate] = React.useState("");
+
+    React.useEffect(() => {
+        const currentDate = new Date().toLocaleDateString('ru-RU', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        });
+        setFormattedDate(currentDate.toUpperCase());
+    }, []);
 
     return (
         <header className="bg-paper text-ink relative z-30">
@@ -38,7 +42,7 @@ export const Masthead: React.FC<MastheadProps> = ({
                     <div className="flex justify-between items-center text-[10px] md:text-xs font-sans uppercase tracking-widest text-gray-600">
                         <div className="flex flex-col space-y-0.5">
                             <span className="font-bold text-ink">Выпуск 142, № 44</span>
-                            <span className="text-gray-400 font-medium">{formattedDate}</span>
+                            <span className="text-gray-400 font-medium">{formattedDate || 'ЗАГРУЗКА...'}</span>
                         </div>
 
                         <div className="flex flex-col items-end space-y-1.5 text-right">
@@ -60,18 +64,19 @@ export const Masthead: React.FC<MastheadProps> = ({
             {/* Main Title Area */}
             <div className="py-8 md:py-14 border-b-4 border-double border-black relative">
                 <div className="container mx-auto px-4 text-center">
-                    <h1
-                        onClick={() => onCategorySelect(null)}
-                        className="font-masthead text-5xl md:text-7xl lg:text-8xl uppercase tracking-[0.05em] leading-none mb-3 cursor-pointer hover:opacity-80 transition-opacity"
-                    >
-                        Студенческий Обозреватель
-                    </h1>
+                    <div className="flex items-center justify-center space-x-8 md:space-x-12 mb-3">
+                        <div className="hidden lg:block w-8 md:w-24 h-px bg-black/10"></div>
+                        <h1
+                            onClick={() => onCategorySelect(null)}
+                            className="font-masthead text-5xl md:text-7xl lg:text-7xl uppercase tracking-[0.05em] leading-none cursor-pointer hover:opacity-80 transition-opacity"
+                        >
+                            Студенческий Обозреватель
+                        </h1>
+                        <div className="hidden lg:block w-8 md:w-24 h-px bg-black/10"></div>
+                    </div>
                     <p className="font-serif italic text-xs md:text-xl text-gray-500 mt-2 tracking-wide">
                         &quot;Veritas, Libertas, et Caffeina&quot;
                     </p>
-
-                    <div className="absolute top-1/2 left-8 w-8 md:w-24 h-px bg-black/20 hidden lg:block"></div>
-                    <div className="absolute top-1/2 right-8 w-8 md:w-24 h-px bg-black/20 hidden lg:block"></div>
                 </div>
             </div>
 
