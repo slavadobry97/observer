@@ -1,68 +1,112 @@
-# Payload Blank Template
+# 🎓 Студенческий Обозреватель (Student Observer)
 
-This template comes configured with the bare minimum to get started on anything you need.
+**Цифровая студенческая газета на стеке Next.js 15 и Payload CMS 3.0**
 
-## Quick start
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Next.js](https://img.shields.io/badge/Next.js-15-black)
+![Payload](https://img.shields.io/badge/Payload-3.0-white)
+![Tailwind](https://img.shields.io/badge/Tailwind-4.0-38bdf8)
 
-This template can be deployed directly from our Cloud hosting and it will setup MongoDB and cloud S3 object storage for media.
+---
 
-## Quick Start - local setup
+## 🚀 О проекте
 
-To spin up this template locally, follow these steps:
+**Студенческий Обозреватель** — это современная платформа для публикации университетских новостей, объявлений и репортажей. Проект объединяет мощную CMS для редакторов и быстрый, адаптивный фронтенд для студентов.
 
-### Clone
+### ✨ Ключевые возможности
 
-After you click the `Deploy` button above, you'll want to have standalone copy of this repo on your machine. If you've already cloned this repo, skip to [Development](#development).
+- **📰 Новости и Статьи**: Лента новостей с бесконечной прокруткой, категориями и поиском.
+- **📢 Объявления**: Боковая панель для важных университетских объявлений (куплю/продам, услуги, срочно).
+- **☁️ Payload CMS**: Полноценная админ-панель (`/admin`) для управления контентом, пользователями и медиа.
+- **🤖 AI-Редактор (Gemini)**:
+  - Генерация новостных сводок (брифингов) одной кнопкой.
+  - Написание полноценных статей по заголовку с учётом стилистики и контекста вуза.
+  - Работает опционально (Graceful Fallback), если API недоступен.
+- **🌦 Погода**: Виджет погоды в Минске с юмористическими описаниями.
+- **📱 Адаптивный дизайн**: Mobile-first вёрстка на **Tailwind CSS v4**.
+- **📝 Lexical Editor**: Мощный визуальный редактор статей с поддержкой форматирования.
 
-### Development
+---
 
-1. First [clone the repo](#clone) if you have not done so already
-2. `cd my-project && cp .env.example .env` to copy the example environment variables. You'll need to add the `MONGODB_URL` from your Cloud project to your `.env` if you want to use S3 storage and the MongoDB database that was created for you.
+## 🛠 Технологический стек
 
-3. `pnpm install && pnpm dev` to install dependencies and start the dev server
-4. open `http://localhost:3000` to open the app in your browser
+- **Framework**: [Next.js 15 (App Router)](https://nextjs.org/)
+- **CMS / Backend**: [Payload CMS 3.0](https://payloadcms.com/)
+- **Database**: SQLite (локальный файл `payload-db.sqlite`)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
+- **AI**: [Google Gemini API](https://ai.google.dev/) (`gemini-2.5-flash`)
+- **Testing**: Playwright (E2E)
 
-That's it! Changes made in `./src` will be reflected in your app. Follow the on-screen instructions to login and create your first admin user. Then check out [Production](#production) once you're ready to build and serve your app, and [Deployment](#deployment) when you're ready to go live.
+---
 
-#### Docker (Optional)
+## 📦 Установка и запуск
 
-If you prefer to use Docker for local development instead of a local MongoDB instance, the provided docker-compose.yml file can be used.
+### Предварительные требования
+- Node.js 18+
+- npm или pnpm
 
-To do so, follow these steps:
+### 1. Клонирование репозитория
+```bash
+git clone https://github.com/slavadobry97/observer.git
+cd observer
+```
 
-- Modify the `MONGODB_URL` in your `.env` file to `mongodb://127.0.0.1/<dbname>`
-- Modify the `docker-compose.yml` file's `MONGODB_URL` to match the above `<dbname>`
-- Run `docker-compose up` to start the database, optionally pass `-d` to run in the background.
+### 2. Установка зависимостей
+```bash
+npm install
+# или
+pnpm install
+```
 
-## How it works
+### 3. Настройка окружения
+Создайте файл `.env` в корне проекта на основе примера:
+```bash
+cp .env.example .env
+```
+Заполните переменные:
+- `PAYLOAD_SECRET`: Случайная строка для шифрования сессий.
+- `GEMINI_API_KEY`: Ваш ключ от Google AI Studio (опционально, для AI-функций).
 
-The Payload config is tailored specifically to the needs of most websites. It is pre-configured in the following ways:
+### 4. Запуск сервера разработки
+```bash
+npm run dev
+```
+Приложение будет доступно по адресу: http://localhost:3000
 
-### Collections
+---
 
-See the [Collections](https://payloadcms.com/docs/configuration/collections) docs for details on how to extend this functionality.
+## 📂 Структура проекта
 
-- #### Users (Authentication)
+```
+src/
+├── app/
+│   ├── (frontend)/       # Публичная часть сайта (Next.js App Router)
+│   ├── (payload)/        # Payload CMS админка и API
+│   └── api/              # API эндпоинты (включая /api/gemini)
+├── collections/          # Схемы коллекций Payload (News, Users, Announcements...)
+├── components/           # React компоненты фронтенда
+└── seed.ts               # Скрипт для заполнения тестовыми данными
+```
 
-  Users are auth-enabled collections that have access to the admin panel.
+---
 
-  For additional help, see the official [Auth Example](https://github.com/payloadcms/payload/tree/main/examples/auth) or the [Authentication](https://payloadcms.com/docs/authentication/overview#authentication-overview) docs.
+## 🤖 Работа с AI (Gemini)
 
-- #### Media
+Проект интегрирован с Google Gemini для генерации контента.
+- **Модель**: `gemini-2.5-flash`
+- **Отказоустойчивость**: Если вы находитесь в регионе без доступа к API или ключ не задан, AI-функции вернут заглушку вместо ошибки 500.
 
-  This is the uploads enabled collection. It features pre-configured sizes, focal point and manual resizing to help you manage your pictures.
+---
 
-### Docker
+## 🧪 Тестирование
 
-Alternatively, you can use [Docker](https://www.docker.com) to spin up this template locally. To do so, follow these steps:
+Запуск E2E тестов (Playwright):
+```bash
+npx playwright test
+```
 
-1. Follow [steps 1 and 2 from above](#development), the docker-compose file will automatically use the `.env` file in your project root
-1. Next run `docker-compose up`
-1. Follow [steps 4 and 5 from above](#development) to login and create your first admin user
+---
 
-That's it! The Docker instance will help you get up and running quickly while also standardizing the development environment across your teams.
+## 📜 Лицензия
 
-## Questions
-
-If you have any issues or questions, reach out to us on [Discord](https://discord.com/invite/payload) or start a [GitHub discussion](https://github.com/payloadcms/payload/discussions).
-# observer
+Этот проект распространяется под лицензией MIT.
